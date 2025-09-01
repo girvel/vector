@@ -29,6 +29,7 @@ static int vector_new(lua_State *L) {
     luaL_getmetatable(L, "vector_metatable");
     lua_setmetatable(L, -2);
 
+    v->len = n;
     for (int i = 0; i < n; i++) {
         v->items[i] = luaL_checknumber(L, i + 1);
     }

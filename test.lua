@@ -14,3 +14,9 @@ do
   u.r = 3
   assert(u.x == 3)
 end
+
+do
+  print("__tostring")
+  local v = vector.new(1, 2, 3)
+  assert(tostring(v) == "{1; 2; 3}")
+end
