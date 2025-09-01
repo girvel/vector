@@ -25,7 +25,7 @@ do
   print("Mutable arithmetic")
   local v = vector.new(1, 2, 3)
   local u = v:add_mut(vector.new(2, 3, 4))
-  assert(u == v)
+  assert(rawequal(v, u))
   assert(u.x == 3)
   assert(u.y == 5)
   assert(u.z == 7)
@@ -56,4 +56,15 @@ do
   assert(v == u)
   assert(v ~= n)
   assert(v ~= m)
+end
+
+do
+  print("Copy")
+  local v = vector.new(1, 2, 3)
+  local u = v:copy()
+
+  assert(u == v)
+  v.x = 3
+  assert(v.x == 3)
+  assert(u.x == 1)
 end

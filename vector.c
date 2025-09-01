@@ -35,6 +35,20 @@ static int vector_new(lua_State *L) {
     return 1;
 }
 
+static int vector_copy(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *result = (vector *)lua_newuserdata(L, sizeof(vector));
+    luaL_getmetatable(L, "vector_metatable");
+    lua_setmetatable(L, -2);
+
+    result->len = self->len;
+    for (int i = 0; i < self->len; i++) {
+        result->items[i] = self->items[i];
+    }
+
+    return 1;
+}
+
 static int vector_eq(lua_State *L) {
     vector *self = check_vector(L, 1);
     vector *other = check_vector(L, 2);
@@ -55,6 +69,30 @@ static int vector_eq(lua_State *L) {
     return 1;
 }
 
+inline static void vector_add_mut_raw(vector *self, vector *other) {
+    for (int i = 0; i < self->len; i++) {
+        self->items[i] += other->items[i];
+    }
+}
+
+inline static void vector_sub_mut_raw(vector *self, vector *other) {
+    for (int i = 0; i < self->len; i++) {
+        self->items[i] -= other->items[i];
+    }
+}
+
+inline static void vector_mul_mut_raw(vector *self, double k) {
+    for (int i = 0; i < self->len; i++) {
+        self->items[i] *= k;
+    }
+}
+
+inline static void vector_div_mut_raw(vector *self, double k) {
+    for (int i = 0; i < self->len; i++) {
+        self->items[i] /= k;
+    }
+}
+
 static int vector_add_mut(lua_State *L) {
     vector *self = check_vector(L, 1);
     vector *other = check_vector(L, 2);
@@ -66,9 +104,7 @@ static int vector_add_mut(lua_State *L) {
         );
     }
 
-    for (int i = 0; i < self->len; i++) {
-        self->items[i] += other->items[i];
-    }
+    vector_add_mut_raw(self, other);
 
     lua_pushvalue(L, 1);
     return 1;
@@ -85,9 +121,7 @@ static int vector_sub_mut(lua_State *L) {
         );
     }
 
-    for (int i = 0; i < self->len; i++) {
-        self->items[i] -= other->items[i];
-    }
+    vector_sub_mut_raw(self, other);
 
     lua_pushvalue(L, 1);
     return 1;
@@ -97,9 +131,7 @@ static int vector_mul_mut(lua_State *L) {
     vector *self = check_vector(L, 1);
     double k = luaL_checknumber(L, 2);
 
-    for (int i = 0; i < self->len; i++) {
-        self->items[i] *= k;
-    }
+    vector_mul_mut_raw(self, k);
 
     lua_pushvalue(L, 1);
     return 1;
@@ -109,9 +141,7 @@ static int vector_div_mut(lua_State *L) {
     vector *self = check_vector(L, 1);
     double k = luaL_checknumber(L, 2);
 
-    for (int i = 0; i < self->len; i++) {
-        self->items[i] /= k;
-    }
+    vector_div_mut_raw(self, k);
 
     lua_pushvalue(L, 1);
     return 1;
@@ -179,6 +209,7 @@ static int vector_newindex(lua_State *L) {
 }
 
 static const struct luaL_Reg vector_methods[] = {
+    { "copy", vector_copy },
     { "add_mut", vector_add_mut },
     { "sub_mut", vector_sub_mut },
     { "mul_mut", vector_mul_mut },
