@@ -152,3 +152,11 @@ do
   assert(vector.white == vector.new(1, 1, 1))
   assert(vector.black == vector.new(0, 0, 0))
 end
+
+do
+  print("Composite constants")
+  assert(vector.directions[1] == vector.up)
+  assert(vector.directions[2] == vector.down)
+  assert(vector.directions[3] == vector.left)
+  assert(vector.directions[4] == vector.right)
+end

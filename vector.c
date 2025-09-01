@@ -481,30 +481,6 @@ int luaopen_vector(lua_State *L) {
     one->items[1] = 1;
     lua_setfield(L, -2, "one");
 
-    vector *up = vector_allocate(L);
-    up->len = 2;
-    up->items[0] = 0;
-    up->items[1] = -1;
-    lua_setfield(L, -2, "up");
-
-    vector *down = vector_allocate(L);
-    down->len = 2;
-    down->items[0] = 0;
-    down->items[1] = 1;
-    lua_setfield(L, -2, "down");
-
-    vector *left = vector_allocate(L);
-    left->len = 2;
-    left->items[0] = -1;
-    left->items[1] = 0;
-    lua_setfield(L, -2, "left");
-
-    vector *right = vector_allocate(L);
-    right->len = 2;
-    right->items[0] = 1;
-    right->items[1] = 0;
-    lua_setfield(L, -2, "right");
-
     vector *white = vector_allocate(L);
     white->len = 3;
     white->items[0] = 1;
@@ -518,6 +494,42 @@ int luaopen_vector(lua_State *L) {
     black->items[1] = 0;
     black->items[2] = 0;
     lua_setfield(L, -2, "black");
+
+    lua_createtable(L, 4, 0);  // .directions
+
+    vector *up = vector_allocate(L);
+    up->len = 2;
+    up->items[0] = 0;
+    up->items[1] = -1;
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -4, "up");
+    lua_rawseti(L, -2, 1);
+
+    vector *down = vector_allocate(L);
+    down->len = 2;
+    down->items[0] = 0;
+    down->items[1] = 1;
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -4, "down");
+    lua_rawseti(L, -2, 2);
+
+    vector *left = vector_allocate(L);
+    left->len = 2;
+    left->items[0] = -1;
+    left->items[1] = 0;
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -4, "left");
+    lua_rawseti(L, -2, 3);
+
+    vector *right = vector_allocate(L);
+    right->len = 2;
+    right->items[0] = 1;
+    right->items[1] = 0;
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -4, "right");
+    lua_rawseti(L, -2, 4);
+
+    lua_setfield(L, -2, "directions");
 
     return 1;
 }
