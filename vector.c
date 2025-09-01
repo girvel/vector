@@ -35,6 +35,26 @@ static int vector_new(lua_State *L) {
     return 1;
 }
 
+static int vector_eq(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *other = check_vector(L, 2);
+
+    if (self->len != other->len) {
+        lua_pushboolean(L, 0);
+        return 1;
+    }
+
+    for (int i = 0; i < self->len; i++) {
+        if (self->items[i] != other->items[i]) {
+            lua_pushboolean(L, 0);
+            return 1;
+        }
+    }
+
+    lua_pushboolean(L, 1);
+    return 1;
+}
+
 static int vector_add_mut(lua_State *L) {
     vector *self = check_vector(L, 1);
     vector *other = check_vector(L, 2);
@@ -163,6 +183,7 @@ static const struct luaL_Reg vector_methods[] = {
     { "sub_mut", vector_sub_mut },
     { "mul_mut", vector_mul_mut },
     { "div_mut", vector_div_mut },
+    { "__eq", vector_eq },
     { "__tostring", vector_tostring },
     { "__index", vector_index },
     { "__newindex", vector_newindex },
