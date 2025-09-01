@@ -334,6 +334,37 @@ static int vector_normalized2(lua_State *L) {
     return 1;
 }
 
+inline static int vector_map_mut_raw(lua_State *L, vector *self, int argument_i) {
+    luaL_checktype(L, argument_i, LUA_TFUNCTION);
+    
+    for (int i = 0; i < self->len; i++) {
+        lua_pushvalue(L, argument_i);
+        lua_pushnumber(L, self->items[i]);
+        int status = lua_pcall(L, 1, 1, 0);
+        if (status != LUA_OK) {
+            return lua_error(L);
+        }
+        double result = luaL_checknumber(L, -1);
+        self->items[i] = result;
+        lua_pop(L, 1);
+    }
+
+    return 1;
+}
+
+static int vector_map_mut(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector_map_mut_raw(L, self, 2);
+    return 1;
+}
+
+static int vector_map(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *result = vector_copy_raw(L, self);
+    vector_map_mut_raw(L, result, 2);
+    return 1;
+}
+
 // A function to convert the vector to a string for printing.
 static int vector_tostring(lua_State *L) {
     vector *v = check_vector(L, 1);
@@ -401,6 +432,8 @@ static const struct luaL_Reg vector_methods[] = {
     { "normalized2_mut", vector_normalized2_mut },
     { "normalized", vector_normalized },
     { "normalized2", vector_normalized2 },
+    { "map_mut", vector_map_mut },
+    { "map", vector_map },
     { "__tostring", vector_tostring },
     { "__index", vector_index },
     { "__newindex", vector_newindex },

@@ -126,3 +126,11 @@ do
   assert(v == vector.new(1, 0))
   assert(vector.new(2, -3):normalized2() == vector.new(0, -1))
 end
+
+do
+  print("Map")
+  local v = vector.new(1.5, 2.5)
+  v:map_mut(math.floor)
+  assert(v == vector.new(1, 2))
+  assert(vector.new(1.5, 2.5):map(math.ceil) == vector.new(2, 3))
+end
