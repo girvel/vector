@@ -134,3 +134,9 @@ do
   assert(v == vector.new(1, 2))
   assert(vector.new(1.5, 2.5):map(math.ceil) == vector.new(2, 3))
 end
+
+do
+  print("Len")
+  local v = vector.new(1, 2, 3, 4)
+  assert(#v == 4)
+end

@@ -365,7 +365,6 @@ static int vector_map(lua_State *L) {
     return 1;
 }
 
-// A function to convert the vector to a string for printing.
 static int vector_tostring(lua_State *L) {
     vector *v = check_vector(L, 1);
 
@@ -381,6 +380,12 @@ static int vector_tostring(lua_State *L) {
     }
     luaL_addstring(&b, "}");
     luaL_pushresult(&b);
+    return 1;
+}
+
+static int vector_len(lua_State *L) {
+    vector *v = check_vector(L, 1);
+    lua_pushnumber(L, v->len);
     return 1;
 }
 
@@ -435,6 +440,7 @@ static const struct luaL_Reg vector_methods[] = {
     { "map_mut", vector_map_mut },
     { "map", vector_map },
     { "__tostring", vector_tostring },
+    { "__len", vector_len },
     { "__index", vector_index },
     { "__newindex", vector_newindex },
     { NULL, NULL },
