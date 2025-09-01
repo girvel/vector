@@ -163,6 +163,8 @@ do
   assert(vector.extended_directions[2] == vector.down)
   assert(vector.extended_directions[3] == vector.left)
   assert(vector.extended_directions[4] == vector.right)
-  -- print(vector.extended_directions[5])
-  -- assert(vector.extended_directions[5] == vector.new(-1, -1))
+  assert(vector.extended_directions[5] == vector.new(-1, -1))
+  assert(vector.extended_directions[6] == vector.new(1, -1))
+  assert(vector.extended_directions[7] == vector.new(-1, 1))
+  assert(vector.extended_directions[8] == vector.new(1, 1))
 end

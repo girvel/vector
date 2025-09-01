@@ -539,6 +539,31 @@ int luaopen_vector(lua_State *L) {
     lua_rawseti(L, -2, 4);
 
     lua_setfield(L, -3, "directions");
+
+    vector *ul = vector_allocate(L);
+    ul->len = 2;
+    ul->items[0] = -1;
+    ul->items[1] = -1;
+    lua_rawseti(L, -2, 5);
+
+    vector *ur = vector_allocate(L);
+    ur->len = 2;
+    ur->items[0] = 1;
+    ur->items[1] = -1;
+    lua_rawseti(L, -2, 6);
+
+    vector *dl = vector_allocate(L);
+    dl->len = 2;
+    dl->items[0] = -1;
+    dl->items[1] = 1;
+    lua_rawseti(L, -2, 7);
+
+    vector *dr = vector_allocate(L);
+    dr->len = 2;
+    dr->items[0] = 1;
+    dr->items[1] = 1;
+    lua_rawseti(L, -2, 8);
+
     lua_setfield(L, -2, "extended_directions");
 
     return 1;
