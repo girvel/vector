@@ -19,8 +19,6 @@ typedef struct {
     double items[MAX_LEN];
 } vector;
 
-// --- Internal Helpers (can remain static) ---
-
 static inline int get_index(char key) {
     if (key == 'x' || key == 'r') return 0;
     if (key == 'y' || key == 'g') return 1;
@@ -28,8 +26,6 @@ static inline int get_index(char key) {
     if (key == 'w' || key == 'a') return 3;
     return -1;
 }
-
-// --- Public API Functions (must be marked with EXPORT) ---
 
 EXPORT void vector_unm_mut(vector *self) {
     for (int i = 0; i < self->len; i++) {
@@ -165,8 +161,6 @@ EXPORT bool vector_from_hex(const char *hex_str, vector *result) {
     }
 
     result->len = str_len / 2;
-    // Note: FFI passes struct by value, so we fill the passed-in struct
-    // The hex parsing logic in the original was a bit unusual, this reflects it.
     for (int i = result->len - 1; i >= 0; i--) {
         result->items[i] = ((double) (all_value & 0xFF)) / 255.0;
         all_value >>= 8;

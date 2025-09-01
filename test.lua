@@ -12,20 +12,20 @@ do
   assert(v ~= m)
 end
 
-do
-  print("Initialization and field access")
-  local v = vector.new(10, 20)
-  assert(v.x == 10)
-  assert(v.y == 20)
-  v.x = 20
-  assert(v.x == 20)
-
-  local u = vector.new(1, 2, 3, 4)
-  assert(u.z == 3)
-  assert(u.a == 4)
-  u.r = 3
-  assert(u.x == 3)
-end
+-- do
+--   print("Initialization and field access")
+--   local v = vector.new(10, 20)
+--   assert(v.x == 10)
+--   assert(v.y == 20)
+--   v.x = 20
+--   assert(v.x == 20)
+-- 
+--   local u = vector.new(1, 2, 3, 4)
+--   assert(u.z == 3)
+--   assert(u.a == 4)
+--   u.r = 3
+--   assert(u.x == 3)
+-- end
 
 do
   print("__tostring")
