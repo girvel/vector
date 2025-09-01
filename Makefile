@@ -1,26 +1,21 @@
-LUA_INC = /usr/local/include/luajit-2.1
-LUA_LIB = -L/usr/local/lib -lluajit-5.1
-
-# Compiler and flags
 CC = gcc
 CFLAGS = -fPIC -Wall -Wextra -O2
 LDFLAGS = -shared
 
-# The target shared library
-TARGET = vector.so
+TARGET_LIB = libvector.so
+SRC_LIB = vector.c
 
-# The source file
-SRC = vector.c
+.PHONY: all compile clean test
 
-.PHONY: all compile clean
+all: compile test
 
-all: compile
+compile: $(TARGET_LIB)
+
+$(TARGET_LIB): $(SRC_LIB)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $<
+
+test:
 	luajit test.lua
 
-compile: $(TARGET)
-
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) $(LDFLAGS) -I$(LUA_INC) $(LUA_LIB) -o $@ $<
-
 clean:
-	rm -f $(TARGET)
+	rm -f $(TARGET_LIB)

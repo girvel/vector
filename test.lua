@@ -1,6 +1,18 @@
 local vector = require("vector")
 
 do
+  print("Equality")
+  local v = vector.new(1, 2, 3)
+  local u = vector.new(1, 2, 3)
+  local n = vector.new(1, 2, 3, 0)
+  local m = vector.new(2, 2, 2)
+
+  assert(v == u)
+  assert(v ~= n)
+  assert(v ~= m)
+end
+
+do
   print("Initialization and field access")
   local v = vector.new(10, 20)
   assert(v.x == 10)
@@ -44,18 +56,6 @@ do
   assert(v.x == 1)
   assert(v.y == 1)
   assert(v.z == 1)
-end
-
-do
-  print("Equality")
-  local v = vector.new(1, 2, 3)
-  local u = vector.new(1, 2, 3)
-  local n = vector.new(1, 2, 3, 0)
-  local m = vector.new(2, 2, 2)
-
-  assert(v == u)
-  assert(v ~= n)
-  assert(v ~= m)
 end
 
 do
