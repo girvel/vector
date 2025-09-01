@@ -1,6 +1,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#include <string.h>
 
 // Define the C structure for a 2D vector.
 typedef struct {
@@ -66,10 +67,47 @@ static int vector_tostring(lua_State *L) {
     return 1;
 }
 
+static int vector_index(lua_State *L) {
+    vector *v = check_vector(L, 1);
+    const char *key = luaL_checkstring(L, 2);
+
+    if (strcmp(key, "x") == 0) {
+        lua_pushnumber(L, v->x);
+        return 1;
+    } else if (strcmp(key, "y") == 0) {
+        lua_pushnumber(L, v->y);
+        return 1;
+    }
+
+    luaL_getmetatable(L, "vector_metatable");
+    lua_pushvalue(L, 2);
+    lua_rawget(L, -2);
+
+    return 1;
+}
+
+static int vector_newindex(lua_State *L) {
+    vector *v = check_vector(L, 1);
+    const char *key = luaL_checkstring(L, 2);
+    double value = luaL_checknumber(L, 3);
+
+    if (strcmp(key, "x") == 0) {
+        v->x = value;
+        return 0;
+    } else if (strcmp(key, "y") == 0) {
+        v->y = value;
+        return 0;
+    }
+
+    return luaL_error(L, "Cannot set invalid field '%s' on a vector", key);
+}
+
 // Array of functions to be registered as methods for vector objects.
 static const struct luaL_Reg vector_methods[] = {
     { "add_mut", vector_add_mut },
     { "__tostring", vector_tostring },
+    { "__index", vector_index },
+    { "__newindex", vector_newindex },
     { NULL, NULL }
 };
 
