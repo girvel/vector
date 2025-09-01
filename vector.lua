@@ -76,6 +76,10 @@ vector_methods.add_mut = C.vector_add_mut
 vector_methods.sub_mut = C.vector_sub_mut
 vector_methods.mul_mut = C.vector_mul_mut
 vector_methods.div_mut = C.vector_div_mut
+vector_methods.abs = C.vector_abs
+vector_methods.abs2 = C.vector_abs2
+vector_methods.normalized_mut = C.vector_normalized_mut
+vector_methods.normalized2_mut = C.vector_normalized2_mut
 
 vector.mt.__add = function(self, other)
   return self:copy():add_mut(other)
@@ -91,6 +95,25 @@ end
 
 vector.mt.__div = function(self, other)
   return self:copy():div_mut(other)
+end
+
+vector_methods.normalized = function(self)
+  return self:copy():normalized_mut()
+end
+
+vector_methods.normalized2 = function(self)
+  return self:copy():normalized2_mut()
+end
+
+vector_methods.map_mut = function(self, f)
+  for i = 0, self.len do
+    self.items[i] = f(self.items[i])
+  end
+  return self
+end
+
+vector_methods.map = function(self, f)
+  return self:copy():map_mut(f)
 end
 
 vector.mt.__tostring = function(self)
