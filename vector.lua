@@ -55,6 +55,30 @@ vector.new = function(...)
   return v
 end
 
+vector.zero = vector.new(0, 0)
+vector.one = vector.new(1, 1)
+vector.up = vector.new(0, -1)
+vector.down = vector.new(0, 1)
+vector.left = vector.new(-1, 0)
+vector.right = vector.new(1, 0)
+
+vector.white = vector.new(1, 1, 1)
+vector.black = vector.new(0, 0, 0)
+
+vector.direction_names = {"up", "left", "down", "right"}
+vector.directions = {vector.up, vector.left, vector.down, vector.right}
+vector.extended_directions = {
+  vector.up, vector.left, vector.down, vector.right,
+  vector.new(1, 1), vector.new(1, -1), vector.new(-1, -1), vector.new(-1, 1)
+}
+
+vector.name_from_direction = function(v)
+  if v == vector.up then return "up" end
+  if v == vector.down then return "down" end
+  if v == vector.left then return "left" end
+  if v == vector.right then return "right" end
+end
+
 vector_methods.copy = function(self)
   local v = vector_cdata_type()
   v.len = self.len
@@ -114,6 +138,10 @@ end
 
 vector_methods.map = function(self, f)
   return self:copy():map_mut(f)
+end
+
+vector.mt.__len = function(self)
+  return self.len
 end
 
 vector.mt.__tostring = function(self)

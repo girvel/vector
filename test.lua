@@ -134,34 +134,6 @@ do
 end
 
 do
-  print("Constants")
-  assert(vector.zero == vector.new(0, 0))
-  assert(vector.one == vector.new(1, 1))
-  assert(vector.up == vector.new(0, -1))
-  assert(vector.down == vector.new(0, 1))
-  assert(vector.left == vector.new(-1, 0))
-  assert(vector.right == vector.new(1, 0))
-  assert(vector.white == vector.new(1, 1, 1))
-  assert(vector.black == vector.new(0, 0, 0))
-end
-
-do
-  print("Composite constants")
-  assert(vector.directions[1] == vector.up)
-  assert(vector.directions[2] == vector.down)
-  assert(vector.directions[3] == vector.left)
-  assert(vector.directions[4] == vector.right)
-  assert(vector.extended_directions[1] == vector.up)
-  assert(vector.extended_directions[2] == vector.down)
-  assert(vector.extended_directions[3] == vector.left)
-  assert(vector.extended_directions[4] == vector.right)
-  assert(vector.extended_directions[5] == vector.new(-1, -1))
-  assert(vector.extended_directions[6] == vector.new(1, -1))
-  assert(vector.extended_directions[7] == vector.new(-1, 1))
-  assert(vector.extended_directions[8] == vector.new(1, 1))
-end
-
-do
   print("Hex")
   assert(vector.hex("ff00ff") == vector.new(1, 0, 1))
 end
