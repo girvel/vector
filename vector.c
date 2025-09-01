@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <lua.h>
 #include <lauxlib.h>
 #include <lua5.3/lauxlib.h>
@@ -57,6 +58,34 @@ static int vector_new(lua_State *L) {
     v->len = n;
     for (int i = 0; i < n; i++) {
         v->items[i] = luaL_checknumber(L, i + 1);
+    }
+
+    return 1;
+}
+
+static int vector_hex(lua_State *L) {
+    size_t str_len;
+    const char *str = luaL_checklstring(L, 1, &str_len);
+
+    if (str_len % 2 != 0) {
+        return luaL_error(L, "Hex length should be divisible by 2, got %d", str_len);
+    }
+
+    char *endptr;
+    long int all_value = strtol(str, &endptr, 16);
+
+    if (*endptr != '\0') {
+        return luaL_error(L, "Unable to parse the hex '%s'", str);
+    }
+
+    if (errno == ERANGE) {
+        return luaL_error(L, "Hex value '%s' too big", str);
+    }
+
+    vector *result = vector_allocate(L);
+    result->len = str_len / 2;
+    for (int i = 0; i < result->len; i++) {
+        result->items[i] = ((double) ((all_value >> (8 * i)) % 256)) / 255;
     }
 
     return 1;
@@ -448,6 +477,7 @@ static const struct luaL_Reg vector_methods[] = {
 
 static const struct luaL_Reg module_methods[] = {
     { "new", vector_new },
+    { "hex", vector_hex },
     { NULL, NULL },
 };
 

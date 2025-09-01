@@ -168,3 +168,8 @@ do
   assert(vector.extended_directions[7] == vector.new(-1, 1))
   assert(vector.extended_directions[8] == vector.new(1, 1))
 end
+
+do
+  print("Hex")
+  assert(vector.hex("ff00ff") == vector.new(1, 0, 1))
+end
