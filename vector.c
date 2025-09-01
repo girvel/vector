@@ -270,6 +270,12 @@ static int vector_ge(lua_State *L) {
     return 1;
 }
 
+inline static void vector_unm_mut_raw(vector *self) {
+    for (int i = 0; i < self->len; i++) {
+        self->items[i] *= -1;
+    }
+}
+
 inline static void vector_add_mut_raw(vector *self, vector *other) {
     for (int i = 0; i < self->len; i++) {
         self->items[i] += other->items[i];
@@ -298,6 +304,12 @@ inline static void vector_mod_mut_raw(vector *self, double k) {
     for (int i = 0; i < self->len; i++) {
         self->items[i] = (int)self->items[i] % (int)k;
     }
+}
+
+static int vector_unm_mut(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector_unm_mut_raw(self);
+    return 1;
 }
 
 static int vector_add_mut(lua_State *L) {
@@ -361,6 +373,13 @@ static int vector_mod_mut(lua_State *L) {
     vector_mod_mut_raw(self, k);
 
     lua_pushvalue(L, 1);
+    return 1;
+}
+
+static int vector_unm(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *result = vector_copy_raw(L, self);
+    vector_unm_mut_raw(result);
     return 1;
 }
 
@@ -594,6 +613,7 @@ static const struct luaL_Reg vector_methods[] = {
     { "copy", vector_copy },
     { "unpack", vector_unpack },
     { "swizzle", vector_swizzle },
+    { "unm_mut", vector_unm_mut },
     { "add_mut", vector_add_mut },
     { "sub_mut", vector_sub_mut },
     { "mul_mut", vector_mul_mut },
@@ -604,6 +624,7 @@ static const struct luaL_Reg vector_methods[] = {
     { "__gt", vector_gt },
     { "__le", vector_le },
     { "__ge", vector_ge },
+    { "__unm", vector_unm },
     { "__add", vector_add },
     { "__sub", vector_sub },
     { "__mul", vector_mul },

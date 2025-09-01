@@ -193,3 +193,10 @@ do
   print("v % k")
   assert(vector.new(5, 3) % 4 == vector.new(1, 3))
 end
+
+do
+  print("Unary minus")
+  local v = vector.new(3, -4)
+  v:unm_mut()
+  assert(v == vector.new(-3, 4))
+end
