@@ -27,46 +27,46 @@ static inline int get_index(char key) {
     return -1;
 }
 
-EXPORT void vector_unm_mut(vector *self) {
+EXPORT vector *vector_unm_mut(vector *self) {
     for (int i = 0; i < self->len; i++) {
         self->items[i] *= -1;
     }
+    return self;
 }
 
-EXPORT void vector_add_mut(vector *self, const vector *other) {
+EXPORT vector *vector_add_mut(vector *self, const vector *other) {
     for (int i = 0; i < self->len; i++) {
         self->items[i] += other->items[i];
     }
+    return self;
 }
 
-EXPORT void vector_sub_mut(vector *self, const vector *other) {
+EXPORT vector *vector_sub_mut(vector *self, const vector *other) {
     for (int i = 0; i < self->len; i++) {
         self->items[i] -= other->items[i];
     }
+    return self;
 }
 
-EXPORT void vector_mul_mut(vector *self, double k) {
+EXPORT vector *vector_mul_mut(vector *self, double k) {
     for (int i = 0; i < self->len; i++) {
         self->items[i] *= k;
     }
+    return self;
 }
 
-EXPORT void vector_div_mut(vector *self, double k) {
+EXPORT vector *vector_div_mut(vector *self, double k) {
     for (int i = 0; i < self->len; i++) {
         self->items[i] /= k;
     }
+    return self;
 }
 
-EXPORT void vector_mod_mut(vector *self, double k) {
+EXPORT vector *vector_mod_mut(vector *self, double k) {
     for (int i = 0; i < self->len; i++) {
         self->items[i] = (int)self->items[i] % (int)k;
     }
-}
-
-EXPORT void vector_map_mut(vector *self, double (*f)(double)) {
-    for (int i = 0; i < self->len; i++) {
-        self->items[i] = f(self->items[i]);
-    }
+    return self;
 }
 
 EXPORT bool vector_eq(const vector *self, const vector *other) {
@@ -107,15 +107,16 @@ EXPORT double vector_abs2(const vector *self) {
     return result;
 }
 
-EXPORT void vector_normalized_mut(vector *self) {
+EXPORT vector *vector_normalized_mut(vector *self) {
     double abs_val = vector_abs(self);
     if (abs_val > 0) {
         vector_div_mut(self, abs_val);
     }
+    return self;
 }
 
-EXPORT void vector_normalized2_mut(vector *self) {
-    if (self->len != 2) return;
+EXPORT vector *vector_normalized2_mut(vector *self) {
+    if (self->len != 2) return NULL;
 
     if (fabs(self->items[0]) > fabs(self->items[1])) {
         self->items[0] = copysign(1, self->items[0]);
@@ -124,14 +125,16 @@ EXPORT void vector_normalized2_mut(vector *self) {
         self->items[0] = 0;
         self->items[1] = copysign(1, self->items[1]);
     }
+    return self;
 }
 
-EXPORT void vector_swizzle(const vector *self, const char *swizzle_str, vector *result) {
+EXPORT vector *vector_swizzle(const vector *self, const char *swizzle_str, vector *result) {
     size_t swizzle_len = strlen(swizzle_str);
     result->len = swizzle_len;
     for (size_t i = 0; i < swizzle_len; i++) {
         result->items[i] = self->items[get_index(swizzle_str[i])];
     }
+    return result;
 }
 
 EXPORT const char* vector_name_from_direction(const vector *self) {
