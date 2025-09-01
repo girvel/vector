@@ -294,6 +294,12 @@ inline static void vector_div_mut_raw(vector *self, double k) {
     }
 }
 
+inline static void vector_mod_mut_raw(vector *self, double k) {
+    for (int i = 0; i < self->len; i++) {
+        self->items[i] = (int)self->items[i] % (int)k;
+    }
+}
+
 static int vector_add_mut(lua_State *L) {
     vector *self = check_vector(L, 1);
     vector *other = check_vector(L, 2);
@@ -348,6 +354,16 @@ static int vector_div_mut(lua_State *L) {
     return 1;
 }
 
+static int vector_mod_mut(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    double k = luaL_checknumber(L, 2);
+
+    vector_mod_mut_raw(self, k);
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
 static int vector_add(lua_State *L) {
     vector *self = check_vector(L, 1);
     vector *other = check_vector(L, 2);
@@ -383,6 +399,16 @@ static int vector_div(lua_State *L) {
     double k = luaL_checknumber(L, 2);
     vector *result = vector_copy_raw(L, self);
     vector_div_mut_raw(result, k);
+
+    lua_pushvalue(L, -1);
+    return 1;
+}
+
+static int vector_mod(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    double k = luaL_checknumber(L, 2);
+    vector *result = vector_copy_raw(L, self);
+    vector_mod_mut_raw(result, k);
 
     lua_pushvalue(L, -1);
     return 1;
@@ -572,6 +598,7 @@ static const struct luaL_Reg vector_methods[] = {
     { "sub_mut", vector_sub_mut },
     { "mul_mut", vector_mul_mut },
     { "div_mut", vector_div_mut },
+    { "mod_mut", vector_mod_mut },
     { "__eq", vector_eq },
     { "__lt", vector_lt },
     { "__gt", vector_gt },
@@ -581,6 +608,7 @@ static const struct luaL_Reg vector_methods[] = {
     { "__sub", vector_sub },
     { "__mul", vector_mul },
     { "__div", vector_div },
+    { "__mod", vector_mod },
     { "abs", vector_abs },
     { "abs2", vector_abs2 },
     { "normalized_mut", vector_normalized_mut },

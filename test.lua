@@ -188,3 +188,8 @@ do
   assert(not (vector.new(1, 1) < vector.new(2, 1)))
   assert(vector.new(1, 1) <= vector.new(2, 1))
 end
+
+do
+  print("v % k")
+  assert(vector.new(5, 3) % 4 == vector.new(1, 3))
+end
