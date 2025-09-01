@@ -82,3 +82,13 @@ do
   assert(v * 2 == vector.new(2, 4, 6))
   assert(u / 3 == vector.new(1, 1, 1))
 end
+
+do
+  print("Unpack")
+  local v = vector.new(1, 3, 3, 7)
+  local x, y, z, w = v:unpack()
+  assert(x == 1)
+  assert(y == 3)
+  assert(z == 3)
+  assert(w == 7)
+end

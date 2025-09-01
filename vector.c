@@ -54,6 +54,14 @@ static int vector_copy(lua_State *L) {
     return 1;
 }
 
+static int vector_unpack(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    for (int i = 0; i < self->len; i++) {
+        lua_pushnumber(L, self->items[i]);
+    }
+    return self->len;
+}
+
 static int vector_eq(lua_State *L) {
     vector *self = check_vector(L, 1);
     vector *other = check_vector(L, 2);
@@ -255,6 +263,7 @@ static int vector_newindex(lua_State *L) {
 
 static const struct luaL_Reg vector_methods[] = {
     { "copy", vector_copy },
+    { "unpack", vector_unpack },
     { "add_mut", vector_add_mut },
     { "sub_mut", vector_sub_mut },
     { "mul_mut", vector_mul_mut },
