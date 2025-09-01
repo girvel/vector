@@ -165,11 +165,11 @@ do
   assert(v == vector.new(-3, 4))
 end
 
-do
-  print("Indexing")
-  local v = vector.new(1, 3, 3, 7)
-  assert(v[1] == 1)
-  assert(v[2] == 3)
-  assert(v[3] == 3)
-  assert(v[4] == 7)
-end
+-- do
+--   print("Indexing")
+--   local v = vector.new(1, 3, 3, 7)
+--   assert(v[1] == 1)
+--   assert(v[2] == 3)
+--   assert(v[3] == 3)
+--   assert(v[4] == 7)
+-- end

@@ -55,6 +55,14 @@ vector.new = function(...)
   return v
 end
 
+vector.hex = function(hex)
+  local result = vector_cdata_type()
+  if not C.vector_from_hex(hex, result) then
+    error("Wrong hex format")
+  end
+  return result
+end
+
 vector.zero = vector.new(0, 0)
 vector.one = vector.new(1, 1)
 vector.up = vector.new(0, -1)
@@ -96,14 +104,18 @@ vector_methods.unpack = function(self)
   return unpack(result)
 end
 
+vector_methods.unm_mut = C.vector_unm_mut
 vector_methods.add_mut = C.vector_add_mut
 vector_methods.sub_mut = C.vector_sub_mut
 vector_methods.mul_mut = C.vector_mul_mut
 vector_methods.div_mut = C.vector_div_mut
+vector_methods.mod_mut = C.vector_mod_mut
 vector_methods.abs = C.vector_abs
 vector_methods.abs2 = C.vector_abs2
 vector_methods.normalized_mut = C.vector_normalized_mut
 vector_methods.normalized2_mut = C.vector_normalized2_mut
+vector.mt.__lt = C.vector_lt
+vector.mt.__le = C.vector_le
 
 vector.mt.__add = function(self, other)
   return self:copy():add_mut(other)
@@ -119,6 +131,10 @@ end
 
 vector.mt.__div = function(self, other)
   return self:copy():div_mut(other)
+end
+
+vector.mt.__mod = function(self, other)
+  return self:copy():mod_mut(other)
 end
 
 vector_methods.normalized = function(self)
