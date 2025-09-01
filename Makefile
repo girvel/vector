@@ -1,6 +1,3 @@
-# Makefile for the vec2 Lua library
-
-# Your Lua include and library paths might be different.
 LUA_INC = /usr/include/lua5.3
 LUA_LIB = -llua5.3
 
@@ -10,10 +7,10 @@ CFLAGS = -fPIC -Wall -Wextra -O2
 LDFLAGS = -shared
 
 # The target shared library
-TARGET = vec2.so
+TARGET = vector.so
 
 # The source file
-SRC = vec2.c
+SRC = vector.c
 
 .PHONY: all clean
 

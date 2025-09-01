@@ -1,4 +1,4 @@
-local vec2 = require("vec2")
+local vector = require("vector")
 
-local v = vec2.new(10, 20)
+local v = vector.new(10, 20)
 print(v)
