@@ -11,9 +11,35 @@ typedef struct {
     double items[MAX_LEN];
 } vector;
 
+static inline int get_index(char key) {
+    if (key == 'x') return 0;
+    if (key == 'y') return 1;
+    if (key == 'z') return 2;
+    if (key == 'w') return 3;
+    if (key == 'r') return 0;
+    if (key == 'g') return 1;
+    if (key == 'b') return 2;
+    if (key == 'a') return 3;
+    return -1;
+}
+
+static inline int check_index(lua_State *L, int argument_i) {
+    size_t len;
+    const char *key = luaL_checklstring(L, argument_i, &len);
+    if (len != 1) return -1;
+    return get_index(key[0]);
+}
+
 static vector* check_vector(lua_State *L, int index) {
     void *ud = luaL_checkudata(L, index, "vector_metatable");
     return (vector*)ud;
+}
+
+inline static vector *vector_allocate(lua_State *L) {
+    vector *result = (vector *)lua_newuserdata(L, sizeof(vector));
+    luaL_getmetatable(L, "vector_metatable");
+    lua_setmetatable(L, -2);
+    return result;
 }
 
 static int vector_new(lua_State *L) {
@@ -23,9 +49,7 @@ static int vector_new(lua_State *L) {
         return luaL_error(L, "Got %d arguments, expected %d (x, y)", n, MAX_LEN);
     }
 
-    vector *v = (vector *)lua_newuserdata(L, sizeof(vector));
-    luaL_getmetatable(L, "vector_metatable");
-    lua_setmetatable(L, -2);
+    vector *v = vector_allocate(L);
 
     v->len = n;
     for (int i = 0; i < n; i++) {
@@ -36,10 +60,7 @@ static int vector_new(lua_State *L) {
 }
 
 static vector *vector_copy_raw(lua_State *L, vector *self) {
-    vector *result = (vector *)lua_newuserdata(L, sizeof(vector));
-    luaL_getmetatable(L, "vector_metatable");
-    lua_setmetatable(L, -2);
-
+    vector *result = vector_allocate(L);
     result->len = self->len;
     for (int i = 0; i < self->len; i++) {
         result->items[i] = self->items[i];
@@ -60,6 +81,24 @@ static int vector_unpack(lua_State *L) {
         lua_pushnumber(L, self->items[i]);
     }
     return self->len;
+}
+
+static int vector_swizzle(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    size_t swizzle_len;
+    const char *swizzle_str = luaL_checklstring(L, 2, &swizzle_len);
+
+    if (swizzle_len > MAX_LEN) {
+        return luaL_error(L, "Maximal allowed swizzle length is %d, got %d", MAX_LEN, swizzle_len);
+    }
+
+    vector *result = vector_allocate(L);
+    result->len = swizzle_len;
+    for (int i = 0; i < swizzle_len; i++) {
+        result->items[i] = self->items[get_index(swizzle_str[i])];
+    }
+
+    return 1;
 }
 
 static int vector_eq(lua_State *L) {
@@ -219,19 +258,6 @@ static int vector_tostring(lua_State *L) {
     return 1;
 }
 
-static inline int check_index(lua_State *L, int argument_i) {
-    const char *key = luaL_checkstring(L, argument_i);
-    if (strcmp(key, "x") == 0) return 0;
-    if (strcmp(key, "y") == 0) return 1;
-    if (strcmp(key, "z") == 0) return 2;
-    if (strcmp(key, "w") == 0) return 3;
-    if (strcmp(key, "r") == 0) return 0;
-    if (strcmp(key, "g") == 0) return 1;
-    if (strcmp(key, "b") == 0) return 2;
-    if (strcmp(key, "a") == 0) return 3;
-    return -1;
-}
-
 static int vector_index(lua_State *L) {
     vector *v = check_vector(L, 1);
     int index = check_index(L, 2);
@@ -264,6 +290,7 @@ static int vector_newindex(lua_State *L) {
 static const struct luaL_Reg vector_methods[] = {
     { "copy", vector_copy },
     { "unpack", vector_unpack },
+    { "swizzle", vector_swizzle },
     { "add_mut", vector_add_mut },
     { "sub_mut", vector_sub_mut },
     { "mul_mut", vector_mul_mut },

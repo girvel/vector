@@ -92,3 +92,9 @@ do
   assert(z == 3)
   assert(w == 7)
 end
+
+do
+  print("Swizzle")
+  local v = vector.new(1, 3, 3, 7)
+  assert(v:swizzle("arb") == vector.new(7, 1, 3))
+end
