@@ -1,13 +1,5 @@
 local ffi = require("ffi")
 
---- @class vector
---- @field items number[]
---- @field len integer
---- @operator add(vector): vector
---- @operator sub(vector): vector
---- @operator mul(number): vector
---- @operator div(number): vector
---- @operator unm(): vector
 local vector = {}
 
 
@@ -76,6 +68,22 @@ vector_methods.add_mut = C.vector_add_mut
 vector_methods.sub_mut = C.vector_sub_mut
 vector_methods.mul_mut = C.vector_mul_mut
 vector_methods.div_mut = C.vector_div_mut
+
+vector.mt.__add = function(self, other)
+  return self:copy():add_mut(other)
+end
+
+vector.mt.__sub = function(self, other)
+  return self:copy():sub_mut(other)
+end
+
+vector.mt.__mul = function(self, other)
+  return self:copy():mul_mut(other)
+end
+
+vector.mt.__div = function(self, other)
+  return self:copy():div_mut(other)
+end
 
 vector.mt.__tostring = function(self)
   local result = "{"
