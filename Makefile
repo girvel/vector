@@ -12,9 +12,12 @@ TARGET = vector.so
 # The source file
 SRC = vector.c
 
-.PHONY: all clean
+.PHONY: all compile clean
 
-all: $(TARGET)
+all: compile
+	luajit test.lua
+
+compile: $(TARGET)
 
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) $(LDFLAGS) -I$(LUA_INC) $(LUA_LIB) -o $@ $<

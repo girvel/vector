@@ -7,4 +7,10 @@ do
   assert(v.y == 20)
   v.x = 20
   assert(v.x == 20)
+
+  local u = vector.new(1, 2, 3, 4)
+  assert(u.z == 3)
+  assert(u.a == 4)
+  u.r = 3
+  assert(u.x == 3)
 end
