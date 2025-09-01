@@ -15,16 +15,16 @@ end
 -- do
 --   print("Initialization and field access")
 --   local v = vector.new(10, 20)
---   assert(v.x == 10)
+--   assert(v.items[0] == 10)
 --   assert(v.y == 20)
---   v.x = 20
---   assert(v.x == 20)
+--   v.items[0] = 20
+--   assert(v.items[0] == 20)
 -- 
 --   local u = vector.new(1, 2, 3, 4)
 --   assert(u.z == 3)
 --   assert(u.a == 4)
 --   u.r = 3
---   assert(u.x == 3)
+--   assert(u.items[0] == 3)
 -- end
 
 do
@@ -34,7 +34,7 @@ do
 end
 
 do
-  print("Mutable arithmetic")
+  print("Mutable arithmetics")
   local v = vector.new(1, 2, 3)
   local u = v:add_mut(vector.new(2, 3, 4))
   --assert(rawequal(v, u))
@@ -56,9 +56,9 @@ do
   local u = v:copy()
 
   assert(u == v)
-  v.x = 3
-  assert(v.x == 3)
-  assert(u.x == 1)
+  v.items[0] = 3
+  assert(v.items[0] == 3)
+  assert(u.items[0] == 1)
 end
 
 do

@@ -1,14 +1,8 @@
 local ffi = require("ffi")
 
---- @class vector: number[]
---- @field x number alias for `[1]`
---- @field y number alias for `[2]`
---- @field z number alias for `[3]`
---- @field w number alias for `[4]`
---- @field r number alias for `[1]`
---- @field g number alias for `[2]`
---- @field b number alias for `[3]`
---- @field a number alias for `[4]`
+--- @class vector
+--- @field items number[]
+--- @field len integer
 --- @operator add(vector): vector
 --- @operator sub(vector): vector
 --- @operator mul(number): vector
@@ -54,19 +48,28 @@ local vector_cdata_type = ffi.metatype("vector", vector.mt)
 
 
 vector.new = function(...)
-    local n = select('#', ...)
-    if n > 4 then
-        error("Too many arguments, max is " .. 4)
-    end
+  local n = select('#', ...)
+  if n > 4 then
+    error("Too many arguments, max is " .. 4)
+  end
 
-    local v = vector_cdata_type()
-    v.len = n
+  local v = vector_cdata_type()
+  v.len = n
 
-    for i = 1, n do
-        v.items[i - 1] = select(i, ...)
-    end
+  for i = 1, n do
+    v.items[i - 1] = select(i, ...)
+  end
 
-    return v
+  return v
+end
+
+vector_methods.copy = function(self)
+  local v = vector_cdata_type()
+  v.len = self.len
+  for i = 0, v.len - 1 do
+    v.items[i] = self.items[i]
+  end
+  return v
 end
 
 vector_methods.add_mut = C.vector_add_mut
