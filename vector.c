@@ -91,6 +91,35 @@ static int vector_hex(lua_State *L) {
     return 1;
 }
 
+static int vector_name_from_direction(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    if (self->len != 2) {
+        lua_pushnil(L);
+        return 1;
+    }
+    if (self->items[0] == 0) {
+        if (self->items[1] == 1) {
+            lua_pushstring(L, "down");
+            return 1;
+        }
+        if (self->items[1] == -1) {
+            lua_pushstring(L, "up");
+            return 1;
+        }
+    } else if (self->items[1] == 0) {
+        if (self->items[0] == 1) {
+            lua_pushstring(L, "right");
+            return 1;
+        }
+        if (self->items[0] == -1) {
+            lua_pushstring(L, "left");
+            return 1;
+        }
+    }
+    lua_pushnil(L);
+    return 1;
+}
+
 static vector *vector_copy_raw(lua_State *L, vector *self) {
     vector *result = vector_allocate(L);
     result->len = self->len;
@@ -478,6 +507,7 @@ static const struct luaL_Reg vector_methods[] = {
 static const struct luaL_Reg module_methods[] = {
     { "new", vector_new },
     { "hex", vector_hex },
+    { "name_from_direction", vector_name_from_direction },
     { NULL, NULL },
 };
 

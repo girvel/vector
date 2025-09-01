@@ -173,3 +173,11 @@ do
   print("Hex")
   assert(vector.hex("ff00ff") == vector.new(1, 0, 1))
 end
+
+do
+  print("Name from direction")
+  assert(vector.name_from_direction(vector.up) == "up")
+  assert(vector.name_from_direction(vector.down) == "down")
+  assert(vector.name_from_direction(vector.left) == "left")
+  assert(vector.name_from_direction(vector.right) == "right")
+end
