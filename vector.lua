@@ -1,6 +1,9 @@
 local ffi = require("ffi")
-local C = ffi.load("./libvector.so")
 
+local vector = {}
+
+
+local C = ffi.load("./libvector.so")
 ffi.cdef[[
     typedef struct {
         int len;
@@ -15,7 +18,6 @@ vector_mt.__eq = C.vector_eq
 
 local vector_cdata_type = ffi.metatype("vector", vector_mt)
 
-local vector = {}
 
 vector.new = function(...)
     local n = select('#', ...)
