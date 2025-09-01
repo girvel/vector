@@ -11,8 +11,6 @@ typedef struct {
     double items[MAX_LEN];
 } vector;
 
-static int vector_add_mut(lua_State *L);
-
 static vector* check_vector(lua_State *L, int index) {
     void *ud = luaL_checkudata(L, index, "vector_metatable");
     return (vector*)ud;
@@ -50,6 +48,49 @@ static int vector_add_mut(lua_State *L) {
 
     for (int i = 0; i < self->len; i++) {
         self->items[i] += other->items[i];
+    }
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+static int vector_sub_mut(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *other = check_vector(L, 2);
+
+    if (self->len != other->len) {
+        return luaL_error(
+            L, "Argument vectors have different lengths %d and %d",
+            self->len, other->len
+        );
+    }
+
+    for (int i = 0; i < self->len; i++) {
+        self->items[i] -= other->items[i];
+    }
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+static int vector_mul_mut(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    double k = luaL_checknumber(L, 2);
+
+    for (int i = 0; i < self->len; i++) {
+        self->items[i] *= k;
+    }
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
+
+static int vector_div_mut(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    double k = luaL_checknumber(L, 2);
+
+    for (int i = 0; i < self->len; i++) {
+        self->items[i] /= k;
     }
 
     lua_pushvalue(L, 1);
@@ -119,6 +160,9 @@ static int vector_newindex(lua_State *L) {
 
 static const struct luaL_Reg vector_methods[] = {
     { "add_mut", vector_add_mut },
+    { "sub_mut", vector_sub_mut },
+    { "mul_mut", vector_mul_mut },
+    { "div_mut", vector_div_mut },
     { "__tostring", vector_tostring },
     { "__index", vector_index },
     { "__newindex", vector_newindex },

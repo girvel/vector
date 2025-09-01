@@ -25,9 +25,23 @@ do
   print("Mutable arithmetic")
   local v = vector.new(1, 2, 3)
   local u = v:add_mut(vector.new(2, 3, 4))
-  print(u)
   assert(u == v)
   assert(u.x == 3)
   assert(u.y == 5)
   assert(u.z == 7)
+
+  v:sub_mut(vector.new(2, 4, 6))
+  assert(v.x == 1)
+  assert(v.y == 1)
+  assert(v.z == 1)
+
+  v:mul_mut(3)
+  assert(v.x == 3)
+  assert(v.y == 3)
+  assert(v.z == 3)
+
+  v:div_mut(3)
+  assert(v.x == 1)
+  assert(v.y == 1)
+  assert(v.z == 1)
 end
