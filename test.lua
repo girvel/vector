@@ -20,3 +20,14 @@ do
   local v = vector.new(1, 2, 3)
   assert(tostring(v) == "{1; 2; 3}")
 end
+
+do
+  print("Mutable arithmetic")
+  local v = vector.new(1, 2, 3)
+  local u = v:add_mut(vector.new(2, 3, 4))
+  print(u)
+  assert(u == v)
+  assert(u.x == 3)
+  assert(u.y == 5)
+  assert(u.z == 7)
+end

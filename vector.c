@@ -11,7 +11,7 @@ typedef struct {
     double items[MAX_LEN];
 } vector;
 
-// static int vector_add_mut(lua_State *L);
+static int vector_add_mut(lua_State *L);
 
 static vector* check_vector(lua_State *L, int index) {
     void *ud = luaL_checkudata(L, index, "vector_metatable");
@@ -37,19 +37,24 @@ static int vector_new(lua_State *L) {
     return 1;
 }
 
-// static int vector_add_mut(lua_State *L) {
-//     // The first argument is the vector itself (the 'self').
-//     vector *a = check_vector(L, 1);
-//     // The second argument is the other vector to add.
-//     vector *b = check_vector(L, 2);
-// 
-//     // Mutate the first vector by adding the second.
-//     a->x += b->x;
-//     a->y += b->y;
-// 
-//     // Return the modified vector.
-//     return 1;
-// }
+static int vector_add_mut(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *other = check_vector(L, 2);
+
+    if (self->len != other->len) {
+        return luaL_error(
+            L, "Argument vectors have different lengths %d and %d",
+            self->len, other->len
+        );
+    }
+
+    for (int i = 0; i < self->len; i++) {
+        self->items[i] += other->items[i];
+    }
+
+    lua_pushvalue(L, 1);
+    return 1;
+}
 
 // A function to convert the vector to a string for printing.
 static int vector_tostring(lua_State *L) {
@@ -113,7 +118,7 @@ static int vector_newindex(lua_State *L) {
 }
 
 static const struct luaL_Reg vector_methods[] = {
-    // { "add_mut", vector_add_mut },
+    { "add_mut", vector_add_mut },
     { "__tostring", vector_tostring },
     { "__index", vector_index },
     { "__newindex", vector_newindex },
