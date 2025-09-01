@@ -23,7 +23,7 @@ static int vector_new(lua_State *L) {
         return luaL_error(L, "Got %d arguments, expected %d (x, y)", n, MAX_LEN);
     }
 
-    vector *v = (vector*)lua_newuserdata(L, sizeof(vector));
+    vector *v = (vector *)lua_newuserdata(L, sizeof(vector));
     luaL_getmetatable(L, "vector_metatable");
     lua_setmetatable(L, -2);
 
@@ -35,8 +35,7 @@ static int vector_new(lua_State *L) {
     return 1;
 }
 
-static int vector_copy(lua_State *L) {
-    vector *self = check_vector(L, 1);
+static vector *vector_copy_raw(lua_State *L, vector *self) {
     vector *result = (vector *)lua_newuserdata(L, sizeof(vector));
     luaL_getmetatable(L, "vector_metatable");
     lua_setmetatable(L, -2);
@@ -46,6 +45,12 @@ static int vector_copy(lua_State *L) {
         result->items[i] = self->items[i];
     }
 
+    return result;
+}
+
+static int vector_copy(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector_copy_raw(L, self);
     return 1;
 }
 
@@ -147,6 +152,46 @@ static int vector_div_mut(lua_State *L) {
     return 1;
 }
 
+static int vector_add(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *other = check_vector(L, 2);
+    vector *result = vector_copy_raw(L, self);
+    vector_add_mut_raw(result, other);
+
+    lua_pushvalue(L, -1);
+    return 1;
+}
+
+static int vector_sub(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *other = check_vector(L, 2);
+    vector *result = vector_copy_raw(L, self);
+    vector_sub_mut_raw(result, other);
+
+    lua_pushvalue(L, -1);
+    return 1;
+}
+
+static int vector_mul(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    double k = luaL_checknumber(L, 2);
+    vector *result = vector_copy_raw(L, self);
+    vector_mul_mut_raw(result, k);
+
+    lua_pushvalue(L, -1);
+    return 1;
+}
+
+static int vector_div(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    double k = luaL_checknumber(L, 2);
+    vector *result = vector_copy_raw(L, self);
+    vector_div_mut_raw(result, k);
+
+    lua_pushvalue(L, -1);
+    return 1;
+}
+
 // A function to convert the vector to a string for printing.
 static int vector_tostring(lua_State *L) {
     vector *v = check_vector(L, 1);
@@ -215,6 +260,10 @@ static const struct luaL_Reg vector_methods[] = {
     { "mul_mut", vector_mul_mut },
     { "div_mut", vector_div_mut },
     { "__eq", vector_eq },
+    { "__add", vector_add },
+    { "__sub", vector_sub },
+    { "__mul", vector_mul },
+    { "__div", vector_div },
     { "__tostring", vector_tostring },
     { "__index", vector_index },
     { "__newindex", vector_newindex },

@@ -68,3 +68,17 @@ do
   assert(v.x == 3)
   assert(u.x == 1)
 end
+
+do
+  print("Immutable arithmetic")
+  local v = vector.new(1, 2, 3)
+  local u = vector.new(3, 3, 3)
+  assert(v + u == vector.new(4, 5, 6))
+  assert(v == vector.new(1, 2, 3))
+  assert(u == vector.new(3, 3, 3))
+
+  assert(v - u == vector.new(-2, -1, 0))
+
+  assert(v * 2 == vector.new(2, 4, 6))
+  assert(u / 3 == vector.new(1, 1, 1))
+end
