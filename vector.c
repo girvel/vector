@@ -28,6 +28,12 @@ static inline int get_index(char key) {
 }
 
 static inline int check_index(lua_State *L, int argument_i) {
+    if (lua_isnumber(L, argument_i)) {
+        int index = lua_tointeger(L, argument_i);
+        if (index < 1 || index > MAX_LEN) return -1;
+        return index - 1;
+    }
+
     size_t len;
     const char *key = luaL_checklstring(L, argument_i, &len);
     if (len != 1) return -1;
