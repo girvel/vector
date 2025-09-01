@@ -182,6 +182,94 @@ static int vector_eq(lua_State *L) {
     return 1;
 }
 
+static int vector_lt(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *other = check_vector(L, 2);
+
+    if (self->len != other->len) {
+        return luaL_error(
+            L, "Argument vectors have different lengths %d and %d",
+            self->len, other->len
+        );
+    }
+
+    for (int i = 0; i < self->len; i++) {
+        if (self->items[i] >= other->items[i]) {
+            lua_pushboolean(L, 0);
+            return 1;
+        }
+    }
+
+    lua_pushboolean(L, 1);
+    return 1;
+}
+
+static int vector_gt(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *other = check_vector(L, 2);
+
+    if (self->len != other->len) {
+        return luaL_error(
+            L, "Argument vectors have different lengths %d and %d",
+            self->len, other->len
+        );
+    }
+
+    for (int i = 0; i < self->len; i++) {
+        if (self->items[i] <= other->items[i]) {
+            lua_pushboolean(L, 0);
+            return 1;
+        }
+    }
+
+    lua_pushboolean(L, 1);
+    return 1;
+}
+
+static int vector_le(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *other = check_vector(L, 2);
+
+    if (self->len != other->len) {
+        return luaL_error(
+            L, "Argument vectors have different lengths %d and %d",
+            self->len, other->len
+        );
+    }
+
+    for (int i = 0; i < self->len; i++) {
+        if (self->items[i] > other->items[i]) {
+            lua_pushboolean(L, 0);
+            return 1;
+        }
+    }
+
+    lua_pushboolean(L, 1);
+    return 1;
+}
+
+static int vector_ge(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *other = check_vector(L, 2);
+
+    if (self->len != other->len) {
+        return luaL_error(
+            L, "Argument vectors have different lengths %d and %d",
+            self->len, other->len
+        );
+    }
+
+    for (int i = 0; i < self->len; i++) {
+        if (self->items[i] < other->items[i]) {
+            lua_pushboolean(L, 0);
+            return 1;
+        }
+    }
+
+    lua_pushboolean(L, 1);
+    return 1;
+}
+
 inline static void vector_add_mut_raw(vector *self, vector *other) {
     for (int i = 0; i < self->len; i++) {
         self->items[i] += other->items[i];
@@ -485,6 +573,10 @@ static const struct luaL_Reg vector_methods[] = {
     { "mul_mut", vector_mul_mut },
     { "div_mut", vector_div_mut },
     { "__eq", vector_eq },
+    { "__lt", vector_lt },
+    { "__gt", vector_gt },
+    { "__le", vector_le },
+    { "__ge", vector_ge },
     { "__add", vector_add },
     { "__sub", vector_sub },
     { "__mul", vector_mul },

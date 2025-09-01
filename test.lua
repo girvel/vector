@@ -181,3 +181,10 @@ do
   assert(vector.name_from_direction(vector.left) == "left")
   assert(vector.name_from_direction(vector.right) == "right")
 end
+
+do
+  print("Ordering")
+  assert(vector.new(1, 1) < vector.new(2, 2))
+  assert(not (vector.new(1, 1) < vector.new(2, 1)))
+  assert(vector.new(1, 1) <= vector.new(2, 1))
+end
