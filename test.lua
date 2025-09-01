@@ -140,3 +140,15 @@ do
   local v = vector.new(1, 2, 3, 4)
   assert(#v == 4)
 end
+
+do
+  print("Constants")
+  assert(vector.zero == vector.new(0, 0))
+  assert(vector.one == vector.new(1, 1))
+  assert(vector.up == vector.new(0, -1))
+  assert(vector.down == vector.new(0, 1))
+  assert(vector.left == vector.new(-1, 0))
+  assert(vector.right == vector.new(1, 0))
+  assert(vector.white == vector.new(1, 1, 1))
+  assert(vector.black == vector.new(0, 0, 0))
+end

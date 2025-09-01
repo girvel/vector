@@ -469,5 +469,55 @@ int luaopen_vector(lua_State *L) {
     lua_newtable(L);
     luaL_register(L, NULL, module_methods);
 
+    vector *zero = vector_allocate(L);
+    zero->len = 2;
+    zero->items[0] = 0;
+    zero->items[1] = 0;
+    lua_setfield(L, -2, "zero");
+
+    vector *one = vector_allocate(L);
+    one->len = 2;
+    one->items[0] = 1;
+    one->items[1] = 1;
+    lua_setfield(L, -2, "one");
+
+    vector *up = vector_allocate(L);
+    up->len = 2;
+    up->items[0] = 0;
+    up->items[1] = -1;
+    lua_setfield(L, -2, "up");
+
+    vector *down = vector_allocate(L);
+    down->len = 2;
+    down->items[0] = 0;
+    down->items[1] = 1;
+    lua_setfield(L, -2, "down");
+
+    vector *left = vector_allocate(L);
+    left->len = 2;
+    left->items[0] = -1;
+    left->items[1] = 0;
+    lua_setfield(L, -2, "left");
+
+    vector *right = vector_allocate(L);
+    right->len = 2;
+    right->items[0] = 1;
+    right->items[1] = 0;
+    lua_setfield(L, -2, "right");
+
+    vector *white = vector_allocate(L);
+    white->len = 3;
+    white->items[0] = 1;
+    white->items[1] = 1;
+    white->items[2] = 1;
+    lua_setfield(L, -2, "white");
+
+    vector *black = vector_allocate(L);
+    black->len = 3;
+    black->items[0] = 0;
+    black->items[1] = 0;
+    black->items[2] = 0;
+    lua_setfield(L, -2, "black");
+
     return 1;
 }
