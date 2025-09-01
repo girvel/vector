@@ -1,5 +1,5 @@
-LUA_INC = /usr/include/lua5.3
-LUA_LIB = -llua5.3
+LUA_INC = /usr/local/include/luajit-2.1
+LUA_LIB = -L/usr/local/lib -lluajit-5.1
 
 # Compiler and flags
 CC = gcc

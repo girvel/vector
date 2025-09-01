@@ -91,10 +91,11 @@ int luaopen_vector(lua_State *L) {
     lua_setfield(L, -2, "__index");
 
     // Register the methods in the metatable.
-    luaL_setfuncs(L, vector_methods, 0);
+    luaL_register(L, NULL, vector_methods);
 
     // Create the library table and register the functions.
-    luaL_newlib(L, vector_lib);
+    lua_newtable(L);
+    luaL_register(L, NULL, vector_lib);
 
     return 1;
 }
