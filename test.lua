@@ -98,3 +98,31 @@ do
   local v = vector.new(1, 3, 3, 7)
   assert(v:swizzle("arb") == vector.new(7, 1, 3))
 end
+
+do
+  print("Abs")
+  local v = vector.new(3, 4)
+  assert(v:abs() == 5)
+end
+
+do
+  print("Abs2")
+  local v = vector.new(3, 4)
+  assert(v:abs2() == 7)
+end
+
+do
+  print("Normalized")
+  local v = vector.new(4, 0)
+  v:normalized_mut()
+  assert(v == vector.new(1, 0))
+  assert(vector.new(0, -3):normalized() == vector.new(0, -1))
+end
+
+do
+  print("Normalized2")
+  local v = vector.new(4, 3)
+  v:normalized2_mut()
+  assert(v == vector.new(1, 0))
+  assert(vector.new(2, -3):normalized2() == vector.new(0, -1))
+end

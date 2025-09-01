@@ -2,6 +2,9 @@
 #include <lauxlib.h>
 #include <lua5.3/lauxlib.h>
 #include <lualib.h>
+#include <math.h>
+#include <stddef.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define MAX_LEN 4
@@ -94,7 +97,7 @@ static int vector_swizzle(lua_State *L) {
 
     vector *result = vector_allocate(L);
     result->len = swizzle_len;
-    for (int i = 0; i < swizzle_len; i++) {
+    for (size_t i = 0; i < swizzle_len; i++) {
         result->items[i] = self->items[get_index(swizzle_str[i])];
     }
 
@@ -239,6 +242,98 @@ static int vector_div(lua_State *L) {
     return 1;
 }
 
+inline static int vector_abs_raw(vector *self) {
+    double result = 0;
+
+    for (int i = 0; i < self->len; i++) {
+        result += self->items[i] * self->items[i];
+    }
+
+    return sqrt(result);
+}
+
+static int vector_abs(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    lua_pushnumber(L, vector_abs_raw(self));
+    return 1;
+}
+
+inline static int vector_abs2_raw(vector *self) {
+    double result = 0;
+
+    for (int i = 0; i < self->len; i++) {
+        result += fabs(self->items[i]);
+    }
+
+    return result;
+}
+
+static int vector_abs2(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    lua_pushnumber(L, vector_abs2_raw(self));
+    return 1;
+}
+
+static int vector_normalized_mut(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector_div_mut_raw(self, vector_abs_raw(self));
+    return 1;
+}
+
+static int vector_normalized2_mut(lua_State *L) {
+    vector *self = check_vector(L, 1);
+
+    if (self->len != 2) {
+        return luaL_error(
+            L, "vector:normalized2 works only with two-dimensional vectors, got %d", self->len
+        );
+    }
+
+    if (fabs(self->items[0]) > fabs(self->items[1])) {
+        self->items[0] = copysign(1, self->items[0]);
+        self->items[1] = 0;
+    } else if (self->items[1] != 0) {
+        self->items[0] = 0;
+        self->items[1] = copysign(1, self->items[1]);
+    } else {
+        return luaL_error(L, "Can not normalize zero vector");
+    }
+
+    return 1;
+}
+
+static int vector_normalized(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *result = vector_copy_raw(L, self);
+    vector_div_mut_raw(result, vector_abs_raw(result));
+    lua_pushvalue(L, -1);
+    return 1;
+}
+
+static int vector_normalized2(lua_State *L) {
+    vector *self = check_vector(L, 1);
+    vector *result = vector_copy_raw(L, self);
+
+    if (self->len != 2) {
+        return luaL_error(
+            L, "vector:normalized2 works only with two-dimensional vectors, got %d", self->len
+        );
+    }
+
+    if (fabs(self->items[0]) > fabs(self->items[1])) {
+        result->items[0] = copysign(1, self->items[0]);
+        result->items[1] = 0;
+    } else if (self->items[1] != 0) {
+        result->items[0] = 0;
+        result->items[1] = copysign(1, self->items[1]);
+    } else {
+        return luaL_error(L, "Can not normalize zero vector");
+    }
+
+    lua_pushvalue(L, -1);
+    return 1;
+}
+
 // A function to convert the vector to a string for printing.
 static int vector_tostring(lua_State *L) {
     vector *v = check_vector(L, 1);
@@ -300,6 +395,12 @@ static const struct luaL_Reg vector_methods[] = {
     { "__sub", vector_sub },
     { "__mul", vector_mul },
     { "__div", vector_div },
+    { "abs", vector_abs },
+    { "abs2", vector_abs2 },
+    { "normalized_mut", vector_normalized_mut },
+    { "normalized2_mut", vector_normalized2_mut },
+    { "normalized", vector_normalized },
+    { "normalized2", vector_normalized2 },
     { "__tostring", vector_tostring },
     { "__index", vector_index },
     { "__newindex", vector_newindex },
