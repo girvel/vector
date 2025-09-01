@@ -64,6 +64,14 @@ vector_methods.copy = function(self)
   return v
 end
 
+vector_methods.unpack = function(self)
+  local result = {}
+  for i = 1, self.len do
+    result[i] = self.items[i - 1]
+  end
+  return unpack(result)
+end
+
 vector_methods.add_mut = C.vector_add_mut
 vector_methods.sub_mut = C.vector_sub_mut
 vector_methods.mul_mut = C.vector_mul_mut
